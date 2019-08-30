@@ -1,0 +1,881 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>swarmpyfac.utils &#8212; SwarmPyFAC 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">SwarmPyFAC 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for swarmpyfac.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; The swarm_util module provides a host of utilities function.</span>
+
+<span class="sd">This module stores a vararity of different functions and constants,</span>
+<span class="sd">which is deemed general usefull when working on swarm data,</span>
+<span class="sd">specifically when such data is loaded from </span>
+<span class="sd">the viresclient python client.</span>
+
+<span class="sd">There is a mix of general constants, such as the permuability of vacum,</span>
+<span class="sd">and different types of functions.</span>
+<span class="sd">The functions can generally be categorised into three types:</span>
+<span class="sd">Higher order functions, functions for working on arrays </span>
+<span class="sd">of scalars or vectors, and functions to work with viresclient.</span>
+<span class="sd">These categories have their own sections, with a short descriptions on each.</span>
+
+<span class="sd">Higher Order Functions</span>
+<span class="sd">----------------------</span>
+<span class="sd">Higher order functions are functions that operates on other functions.</span>
+<span class="sd">This section also contains utilities for higher other higher order functions.</span>
+
+<span class="sd">call</span>
+<span class="sd">    A function to call other functions.</span>
+<span class="sd">    Its main use is propergating options down the call stack.</span>
+<span class="sd">maybe_pops</span>
+<span class="sd">    A utility for call, works kind of like an intersection,</span>
+<span class="sd">    but pops (remove and return) key-value pairs from a dictionary.</span>
+<span class="sd">maybe_keys</span>
+<span class="sd">    A utility for call, works kind of like an intersection,</span>
+<span class="sd">    but returns key-value pairs from a dictionary.</span>
+
+<span class="sd">    </span>
+<span class="sd">Array Utilities</span>
+<span class="sd">---------------</span>
+<span class="sd">These functions are used to work on numpy arrays of scalars or vectors.</span>
+<span class="sd">They are mostly geared toward dealign with time-like series.</span>
+
+<span class="sd">pack_3d</span>
+<span class="sd">    Take 3 equaly long arrays of scalars and make an array of 3d vectors.</span>
+<span class="sd">as_3d</span>
+<span class="sd">    Like pack_3d, but uses dublicates of the same array of scalars.</span>
+<span class="sd">    Usefull for aggregating scalar-vector operations over an array.</span>
+<span class="sd">map_3d</span>
+<span class="sd">    A map function over arrays of 3d vectors,</span>
+<span class="sd">    where the function maped takes a 3d vector to a 3d vector.</span>
+<span class="sd">NEC_to_VSC</span>
+<span class="sd">    Build a transformation from the NEC frame to the VSC frame.</span>
+<span class="sd">    The return is a function, which will transfrom</span>
+<span class="sd">    its input from the NEC frame to the VSC frame.</span>
+<span class="sd">delta</span>
+<span class="sd">    Calculate the changes of a time-like series.</span>
+<span class="sd">means</span>
+<span class="sd">    Calculate the intermediate value (by linear interpolation)</span>
+<span class="sd">    for a time-like series.</span>
+<span class="sd">spherical_delta</span>
+<span class="sd">    Calculate the changes in spherical coordinates as NEC frame vectors.</span>
+<span class="sd">curl</span>
+<span class="sd">    Calculate a single component of curl for an array of vectors.</span>
+<span class="sd">inclination</span>
+<span class="sd">    Calculate the inclination for an awway of vectors.</span>
+<span class="sd">    </span>
+<span class="sd">Viresclient</span>
+<span class="sd">-----------</span>
+<span class="sd">These are the functions related to fetching and loading data</span>
+<span class="sd">from the viresclient python client.</span>
+
+<span class="sd">request_data</span>
+<span class="sd">    Builds and send a request for a CDF file to vires.</span>
+<span class="sd">    Most usefull for defaulting all the relevant parameters.</span>
+<span class="sd">read_cdf</span>
+<span class="sd">    A function to read a cdf file based on a dictionary pairing</span>
+<span class="sd">    of attributes you want to read from the cdf file,</span>
+<span class="sd">    and what you want to refere to them as afterwards.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># &quot;&quot;&quot; Utilities for working on swarm data,</span>
+<span class="c1"># when using the viresclient python client.</span>
+<span class="c1"># &quot;&quot;&quot;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;0.1.3&#39;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Ask Neve Gamby&#39;</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">date</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cdflib</span>
+
+<span class="kn">from</span> <span class="nn">viresclient</span> <span class="k">import</span> <span class="n">SwarmRequest</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">safety</span> <span class="k">as</span> <span class="n">safe_user</span>
+
+<span class="n">MU_0</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">TO_RADIANS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+
+
+<div class="viewcode-block" id="maybe_pops"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.maybe_pops">[docs]</a><span class="k">def</span> <span class="nf">maybe_pops</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a new dict based on the intersection of source keys and keys..</span>
+<span class="sd">    </span>
+<span class="sd">    Create a new dictionary. Each pair of key and value comes from source.</span>
+<span class="sd">    Inclusion in the result is based on intersection of source&#39;s keys and keys.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : dict</span>
+<span class="sd">        A dictionary forming the base of the output.</span>
+<span class="sd">        The result is a subset of this dictionary.</span>
+<span class="sd">    keys : iterable(immutable)</span>
+<span class="sd">        Effectively a list of the keys to extract from source</span>
+<span class="sd">        (though any iterable should do).</span>
+<span class="sd">        The keys do not need to be in source, and only those also</span>
+<span class="sd">        in source will be in the result.</span>
+<span class="sd">        </span>
+<span class="sd">    Result</span>
+<span class="sd">    ------</span>
+<span class="sd">    dict</span>
+<span class="sd">        The dict of key value pairs based on the intersection of </span>
+<span class="sd">        the source&#39;s keys and keys.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; options = {&#39;flag&#39;:True, &#39;int&#39;:5, &#39;float&#39;:3.5,&#39;array&#39;:np.arange(5)}</span>
+<span class="sd">    &gt;&gt;&gt; maybe_pops(options,[&#39;flag&#39;])</span>
+<span class="sd">    {&#39;flag&#39;: True}</span>
+<span class="sd">    &gt;&gt;&gt; maybe_pops(options,[&#39;int&#39;,&#39;float&#39;])</span>
+<span class="sd">    {&#39;int&#39;: 5, &#39;float&#39;: 3.5}</span>
+<span class="sd">    &gt;&gt;&gt; maybe_pops(options,[&#39;flag&#39;,&#39;array&#39;])</span>
+<span class="sd">    {&#39;array&#39;: array([0, 1, 2, 3, 4])}</span>
+<span class="sd">    &gt;&gt;&gt; options</span>
+<span class="sd">    {}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">source</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">source</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="maybe_keys"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.maybe_keys">[docs]</a><span class="k">def</span> <span class="nf">maybe_keys</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a new dict, by poping the intersection of source&#39;s keys and keys.</span>
+<span class="sd">    </span>
+<span class="sd">    Create a new dictionary. Each pair of key and value comes from source.</span>
+<span class="sd">    Inclusion in the result is based on intersection of source&#39;s keys and keys.</span>
+<span class="sd">    This function has the side-effect that the key-value pairs in the result</span>
+<span class="sd">    are removed from source (poped).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source : dict</span>
+<span class="sd">        A dictionary forming the base of the output.</span>
+<span class="sd">        The result is a subset of this dictionary.</span>
+<span class="sd">        There (may) be side-effect on this, of the form that some</span>
+<span class="sd">        key-value pairs (may) be removed.</span>
+<span class="sd">    keys : iterable(immutable)</span>
+<span class="sd">        Effectively a list of the keys to extract from source</span>
+<span class="sd">        (though any iterable should do).</span>
+<span class="sd">        The keys do not need to be in source, and only those also</span>
+<span class="sd">        in source will be in the result.</span>
+<span class="sd">        </span>
+<span class="sd">    Result</span>
+<span class="sd">    ------</span>
+<span class="sd">    dict</span>
+<span class="sd">        The dict of key value pairs based on the intersection of </span>
+<span class="sd">        the source&#39;s keys and keys.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; options = {&#39;flag&#39;:True, &#39;int&#39;:5, &#39;float&#39;:3.5,&#39;array&#39;:np.arange(5)}</span>
+<span class="sd">    &gt;&gt;&gt; maybe_keys(options,[&#39;flag&#39;])</span>
+<span class="sd">    {&#39;flag&#39;: True}</span>
+<span class="sd">    &gt;&gt;&gt; maybe_keys(options,[&#39;int&#39;,&#39;float&#39;])</span>
+<span class="sd">    {&#39;int&#39;: 5, &#39;float&#39;: 3.5}</span>
+<span class="sd">    &gt;&gt;&gt; maybe_keys(options,[&#39;flag&#39;,&#39;array&#39;])</span>
+<span class="sd">    {&#39;flag&#39;: True, &#39;array&#39;: array([0, 1, 2, 3, 4])}</span>
+<span class="sd">    &gt;&gt;&gt; options</span>
+<span class="sd">    {&#39;flag&#39;: True, &#39;int&#39;: 5, &#39;float&#39;: 3.5, &#39;array&#39;: array([0, 1, 2, 3, 4])}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">source</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">source</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="call"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.call">[docs]</a><span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">dict_</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">use_pop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Call a function with arguments mixed from different sources.</span>
+<span class="sd">    </span>
+<span class="sd">    Call a function, by mixing the arguments for the function.</span>
+<span class="sd">    Specifically it extract extra parameters from `dict_` </span>
+<span class="sd">    to use as default keyword arguments in case they have not</span>
+<span class="sd">    been specified otherwise.</span>
+<span class="sd">    If the function called accepts `**kwargs`, then all `dict_`</span>
+<span class="sd">    arguments not otherwise relevant will also be added,</span>
+<span class="sd">    so they can be passed further down possible call chains.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function : a -&gt; b</span>
+<span class="sd">        A function to be called with the composed arguments.</span>
+<span class="sd">        Note that the argument names for this function is used</span>
+<span class="sd">        to determine which keyword arguments to extract from `dict_`</span>
+<span class="sd">    `dict_` : dict</span>
+<span class="sd">        A directory of keyword argument pairs that might be </span>
+<span class="sd">        keyword arguments for the function.</span>
+<span class="sd">        There is no requirement for any overlap with argument names</span>
+<span class="sd">        of function, but only the overlap is used here.</span>
+<span class="sd">    *args</span>
+<span class="sd">        The positional arguments to be passed to function.</span>
+<span class="sd">    use_pop : boolean, optional</span>
+<span class="sd">        A flag for whether the arguments in `dict_` used in the call</span>
+<span class="sd">        should be removed from dict.</span>
+<span class="sd">        Defaults to False (None, which evaluates to False).</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        The keyword arguments to be passed to the function.</span>
+<span class="sd">        These keyword arguments takes priority over those in `_dict`.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ?</span>
+<span class="sd">        The result of the function call.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Base use:</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; options = {&#39;password&#39;:&#39;MyPassword&#39;,&#39;IV&#39;:16*&#39;\x0F&#39;,&#39;target_index&#39;:1}</span>
+<span class="sd">    &gt;&gt;&gt; call(safe_user.box_content,options,&#39;bla&#39;) # doctest: +ELLIPSIS</span>
+<span class="sd">    b&#39;...&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_varnames</span><span class="p">[:</span><span class="n">function</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_argcount</span><span class="p">])</span>
+    <span class="n">residual</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):]</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">]</span>
+    <span class="n">maybe_get</span> <span class="o">=</span> <span class="n">maybe_pops</span> <span class="k">if</span> <span class="n">use_pop</span> <span class="k">else</span> <span class="n">maybe_keys</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">maybe_get</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">residual</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">function</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_flags</span> <span class="o">&amp;</span> <span class="mh">0x08</span><span class="p">:</span> <span class="c1">#this flag is true if function as a **kwargs</span>
+        <span class="c1"># consider the optimization of making a set(names) for faster lookups below</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">dict_</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">})</span>
+        <span class="c1"># consider whether use_pop should be inheireted</span>
+        <span class="c1"># if use_pop is not None:</span>
+            <span class="c1"># options.update({&#39;use_pop&#39;:use_pop})</span>
+    <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div>
+    
+    
+<span class="c1"># def _pack_nd(*scalarss):</span>
+    <span class="c1"># &quot;&quot;&quot; Pack n arrays of scalars into an array of n dimensional vectors.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="c1"># if len(scalarss) &lt; 1:</span>
+        <span class="c1"># return None</span>
+    <span class="c1"># elif len(scalarss) == 1:</span>
+        <span class="c1"># return np.expand_dims(scalarss[0],1)</span>
+    <span class="c1"># dimensions = len(scalarss)</span>
+    <span class="c1"># result = np.zeros((len(scalarss[0]),dimensions))</span>
+    <span class="c1"># for i, scalars in enumerate(scalarss):</span>
+        <span class="c1"># result[:,i] = scalars</span>
+    <span class="c1"># return results</span>
+
+    
+<div class="viewcode-block" id="pack_3d"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.pack_3d">[docs]</a><span class="k">def</span> <span class="nf">pack_3d</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Pack 3 array-likes into an array of 3d vectors.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xs : array-like</span>
+<span class="sd">        The first (xs) components of the final vector.</span>
+<span class="sd">        Must be equivalent to an array of scalars,</span>
+<span class="sd">        generators are not accepted (though ranges are).</span>
+<span class="sd">        Must have a reasoable response to len(xs),</span>
+<span class="sd">        which must be the same as len(ys) and len(zs).</span>
+<span class="sd">    ys : array-like</span>
+<span class="sd">        The second (ys) components of the final vector.</span>
+<span class="sd">        Must be equivalent to an array of scalars,</span>
+<span class="sd">        generators are not accepted.</span>
+<span class="sd">        Must have a reasoable response to len(ys),</span>
+<span class="sd">        which must be the same as len(xs) and len(zs).</span>
+<span class="sd">    zs : array-like</span>
+<span class="sd">        The third (zs) components of the final vector.</span>
+<span class="sd">        Must be equivalent to an array of scalars,</span>
+<span class="sd">        generators are not accepted.</span>
+<span class="sd">        Must have a reasoable response to len(zs),</span>
+<span class="sd">        which must be the same as len(ys) and len(xs).</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        An array of vectors each with 3 dimensions,</span>
+<span class="sd">        and the same length as xs.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; pack_3d(range(5),np.arange(5)*2-3,[np.cos(xs*np.pi) for xs in range(5)])</span>
+<span class="sd">    array([[ 0., -3.,  1.],</span>
+<span class="sd">           [ 1., -1., -1.],</span>
+<span class="sd">           [ 2.,  1.,  1.],</span>
+<span class="sd">           [ 3.,  3., -1.],</span>
+<span class="sd">           [ 4.,  5.,  1.]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># return _pack_nd(xs,ys,zs)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="c1"># if (len(xs) != len(ys) or len(xs) != len(zs)):</span>
+        <span class="c1"># raise ValueError(&#39;lengths not equal, with: &#39;</span>
+                         <span class="c1"># + &#39;!=&#39;.join(map(lambda i: str(len(i)),[xs,ys,zs])))</span>
+    <span class="n">result</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs</span>
+    <span class="n">result</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ys</span>
+    <span class="n">result</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">zs</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+    
+    
+<span class="c1"># def _as_nd(scalars, n=3):</span>
+    <span class="c1"># &quot;&quot;&quot; Copies an array of scalars so it becomes an array of vectors.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="c1"># return pack_3d(*[scalars]*n)</span>
+
+
+<div class="viewcode-block" id="as_3d"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.as_3d">[docs]</a><span class="k">def</span> <span class="nf">as_3d</span><span class="p">(</span><span class="n">scalars</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; As pack_3d, but with the same scalars in on all components.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scalars : array-like</span>
+<span class="sd">        An array-like of scalars.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        An array of 3 dimensional vectors with the same length as xs.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; vec = np.arange(15).reshape(5,3)</span>
+<span class="sd">    &gt;&gt;&gt; as_3d(range(5)) * vec</span>
+<span class="sd">    array([[ 0.,  0.,  0.],</span>
+<span class="sd">           [ 3.,  4.,  5.],</span>
+<span class="sd">           [12., 14., 16.],</span>
+<span class="sd">           [27., 30., 33.],</span>
+<span class="sd">           [48., 52., 56.]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># return _as_nd(xs)</span>
+    <span class="c1"># &quot;&quot;&quot; As pack_3d, but with the same vector in on all components.</span>
+    <span class="c1"># Use this form array operations where one part has a scalars (this),</span>
+    <span class="c1"># and another 3d vectors.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pack_3d</span><span class="p">(</span><span class="n">scalars</span><span class="p">,</span> <span class="n">scalars</span><span class="p">,</span> <span class="n">scalars</span><span class="p">)</span></div>
+
+    
+<span class="c1"># # currently unused, alternative to NEC_to_VSC,</span>
+<span class="c1"># # in consideration as replacement</span>
+<span class="c1"># class _NEC_to_VSC2:</span>
+    
+    <span class="c1"># def __init__(self, velocities=None,angles=None,sines_cosines = None):</span>
+        <span class="c1"># # self.ready = False</span>
+        <span class="c1"># if sines_cosines is not None:</span>
+            <span class="c1"># self.sines, self.cosines = sines_cosines</span>
+            <span class="c1"># # self.ready = True</span>
+        <span class="c1"># elif angles is not None:</span>
+            <span class="c1"># self.from_angles(angles)</span>
+        <span class="c1"># elif velocities is not None</span>
+            <span class="c1"># self.from_velocities(velocities)</span>
+        <span class="c1"># else:</span>
+            <span class="c1"># raise ValueError(&quot;At least one parameter must be not None&quot;)</span>
+        
+    <span class="c1"># def from_angles(self,angles):</span>
+        <span class="c1"># self.sines = np.sin(angles)</span>
+        <span class="c1"># self.cosines = np.cos(angles)</span>
+        <span class="c1"># # self.ready = True</span>
+        
+    <span class="c1"># def from_velocities(self, velocities):</span>
+        <span class="c1"># self.from_angles(-np.arctan2(velocities[:, 0] - velocities[:, 1],</span>
+                                     <span class="c1"># velocities[:, 0] + velocities[:, 1]))</span>
+                                     
+    <span class="c1"># def __call__(self,vectors):</span>
+        <span class="c1"># return pack_3d(self.cosines*vectors[:, 0] + self.sines*vectors[:, 1],</span>
+                       <span class="c1"># - self.sines*vectors[:, 0] + self.cosines*vectors[:, 1],</span>
+                       <span class="c1"># vectors[:, 2])</span>
+                       
+    <span class="c1"># def inverse(self):</span>
+        <span class="c1"># self.sines = -self.sines</span>
+        <span class="c1"># # return pack_3d(self.cosines*vectors[:, 0] - self.sines*vectors[:, 1],</span>
+                       <span class="c1"># # self.sines*vectors[:, 0] + self.cosines*vectors[:, 1],</span>
+                       <span class="c1"># # vectors[:, 2])</span>
+    
+
+<div class="viewcode-block" id="map_3d"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.map_3d">[docs]</a><span class="k">def</span> <span class="nf">map_3d</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">vectors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; map_3d maps a function for 1d data to each dimension in 3d data.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function : ndarray -&gt; ndarray</span>
+<span class="sd">        A function that takes a scalar array</span>
+<span class="sd">        and maps it to another scalar array.</span>
+<span class="sd">    vectors : ndarray</span>
+<span class="sd">        An array of 3 dimensional vectors.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        An array of 3 dimensional vectors.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; vec = np.arange(15).reshape(5,3)</span>
+<span class="sd">    &gt;&gt;&gt; map_3d(lambda xs: [x &gt; 2 and x%4 != 0 for x in xs],vec)</span>
+<span class="sd">    array([[0., 0., 0.],</span>
+<span class="sd">           [1., 0., 1.],</span>
+<span class="sd">           [1., 1., 0.],</span>
+<span class="sd">           [1., 1., 1.],</span>
+<span class="sd">           [0., 1., 1.]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pack_3d</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">function</span><span class="p">(</span><span class="n">vectors</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="NEC_to_VSC"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.NEC_to_VSC">[docs]</a><span class="k">def</span> <span class="nf">NEC_to_VSC</span><span class="p">(</span><span class="n">velocities</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Construct a function to transform from the NEC frame to the VSC frame.</span>
+<span class="sd">    </span>
+<span class="sd">    This function generates another function,</span>
+<span class="sd">    which is a transform of vectors from the NEC frame to the VSC frame.</span>
+<span class="sd">    This specific transformation may be different for each data point.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    velocities : ndarray</span>
+<span class="sd">        The velocities describe thw forward direction in the VSC frame,</span>
+<span class="sd">        and they can be different for each data point.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    function</span>
+<span class="sd">        A function that takes a list of vectors</span>
+<span class="sd">        of the same length as velocities and</span>
+<span class="sd">        transform them from the NEC frame to the VSC frame.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; v = np.arange(15).reshape(5,3)</span>
+<span class="sd">    &gt;&gt;&gt; trans = NEC_to_VSC(v)</span>
+<span class="sd">    &gt;&gt;&gt; trans(v) # doctest: +ELLIPSIS</span>
+<span class="sd">    array([[ 0.7...,  0.7...,  2. ...],</span>
+<span class="sd">           [ 3.5...,  3.5...,  5. ...],</span>
+<span class="sd">           [ 6.5...,  6.5...,  8. ...],</span>
+<span class="sd">           [ 9.5...,  9.5..., 11. ...],</span>
+<span class="sd">           [12.5..., 12.5..., 14. ...]])</span>
+<span class="sd">    &gt;&gt;&gt; trans((v[::-1]-2.5) * (v + 3)) # doctest: +ELLIPSIS</span>
+<span class="sd">    array([[ 49.8...,   9.5...,  57.5...],</span>
+<span class="sd">           [ 46.0...,  46.4...,  68. ...],</span>
+<span class="sd">           [ 34.8...,  42.4...,  60.5...],</span>
+<span class="sd">           [  7.0...,  19.1...,  35. ...],</span>
+<span class="sd">           [-38.4..., -22.4...,  -8.5...]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># &quot;&quot;&quot; Build a transform going from the NEC frame to the VEC frame.</span>
+    <span class="c1"># This is done based on the velocities at each point, so the</span>
+    <span class="c1"># transformation will act differently on each point.</span>
+    <span class="c1"># Returns the actual transformation function,</span>
+    <span class="c1"># which can then be applied to compariable series.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">velocities</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">velocities</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                         <span class="n">velocities</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">velocities</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">sines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+    <span class="n">cosines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">vectors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Transforms from the NEC frame to the VSC frame</span>
+<span class="sd">        </span>
+<span class="sd">        This function takes an array of vectors,</span>
+<span class="sd">        which is in the NEC frame and returns them transformed</span>
+<span class="sd">        into the VSC frame.</span>
+<span class="sd">        The transform will may be different for each vector,</span>
+<span class="sd">        and is fixed when this function is constructed.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vectors : ndarray</span>
+<span class="sd">            An array of 3d points or vectors in the NEC frame.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            An array of the vectors in the VSC frame.</span>
+<span class="sd">            </span>
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        See NEC_to_VSC for examples of use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># &quot;&quot;&quot; Transforms from the NEC frame to the VEC frame.</span>
+        <span class="c1"># Note that the frames have alligned origos,</span>
+        <span class="c1"># so vectors and points transform the same way.</span>
+        <span class="c1"># &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pack_3d</span><span class="p">(</span><span class="n">cosines</span><span class="o">*</span><span class="n">vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sines</span><span class="o">*</span><span class="n">vectors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                       <span class="o">-</span> <span class="n">sines</span><span class="o">*</span><span class="n">vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cosines</span><span class="o">*</span><span class="n">vectors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                       <span class="n">vectors</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># Does the 3rd dimension flip?</span>
+    <span class="k">return</span> <span class="n">transform</span></div>
+
+
+<div class="viewcode-block" id="delta"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.delta">[docs]</a><span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="n">vectors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Computes the finite difference on an arralike.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vectors : ndarray</span>
+<span class="sd">        An array of vectors or scalars.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        An array of vectors or scalars of shape (n-1,...),</span>
+<span class="sd">        when vectors input have shape (n,...).</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; delta(np.arange(5))</span>
+<span class="sd">    array([1, 1, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; delta(np.array([4, 3, 7, 4, 2, 92]))</span>
+<span class="sd">    array([-1,  4, -3, -2, 90])</span>
+<span class="sd">    &gt;&gt;&gt; delta(np.array([[1, 0, 0], [0, 1, 3], [7, -13, 4]]))</span>
+<span class="sd">    array([[ -1,   1,   3],</span>
+<span class="sd">           [  7, -14,   1]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">vectors</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">vectors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="means"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.means">[docs]</a><span class="k">def</span> <span class="nf">means</span><span class="p">(</span><span class="n">vectors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Computes the means between this and the next point.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vectors : ndarray</span>
+<span class="sd">        An array of vectors or scalars.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        An array of vectors or scalars of shape (n-1,...),</span>
+<span class="sd">        when vectors input have shape (n,...).</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; means(np.array(list(range(5))))</span>
+<span class="sd">    array([0.5, 1.5, 2.5, 3.5])</span>
+<span class="sd">    &gt;&gt;&gt; means(np.array([4, 3, 7, 4, 2, 92]))</span>
+<span class="sd">    array([ 3.5,  5. ,  5.5,  3. , 47. ])</span>
+<span class="sd">    &gt;&gt;&gt; means(np.array([[1, 0, 0], [0, 1, 3], [7, -13, 4]]))</span>
+<span class="sd">    array([[ 0.5,  0.5,  1.5],</span>
+<span class="sd">           [ 3.5, -6. ,  3.5]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">vectors</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">vectors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.5</span></div>
+
+
+<div class="viewcode-block" id="spherical_delta"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.spherical_delta">[docs]</a><span class="k">def</span> <span class="nf">spherical_delta</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Computes the change of sherical positions as a NEC vector.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    positions : ndarray</span>
+<span class="sd">        An array of positions (3d vectors) described in spherical coordinates.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray : ndarray</span>
+<span class="sd">        An array of vectors in the NEC frame.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; vecs = np.arange(15).reshape(5,3)</span>
+<span class="sd">    &gt;&gt;&gt; spherical_delta(vecs)</span>
+<span class="sd">    array([[ 0.18317585,  0.18311308, -3.        ],</span>
+<span class="sd">           [ 0.34018372,  0.33913504, -3.        ],</span>
+<span class="sd">           [ 0.49719158,  0.49293804, -3.        ],</span>
+<span class="sd">           [ 0.65419945,  0.64324482, -3.        ]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">theta</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">positions</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">r_means</span> <span class="o">=</span> <span class="n">means</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pack_3d</span><span class="p">(</span><span class="n">r_means</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">TO_RADIANS</span> <span class="o">*</span> <span class="n">delta</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+                   <span class="n">r_means</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">TO_RADIANS</span> <span class="o">*</span> <span class="n">delta</span><span class="p">(</span><span class="n">Lambda</span><span class="p">))</span>
+                           <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">TO_RADIANS</span> <span class="o">*</span> <span class="n">means</span><span class="p">(</span><span class="n">theta</span><span class="p">)),</span>
+                   <span class="o">-</span><span class="n">delta</span><span class="p">(</span><span class="n">r</span><span class="p">))</span></div>
+
+  
+                   
+<div class="viewcode-block" id="curl"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.curl">[docs]</a><span class="k">def</span> <span class="nf">curl</span><span class="p">(</span><span class="n">delta_x</span><span class="p">,</span> <span class="n">delta_field</span><span class="p">,</span> <span class="n">target_index</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+         <span class="c1"># delta_left=None, delta_right=None, target_index=2):</span>
+    <span class="sd">&quot;&quot;&quot; Compute a single component of curl for an array of vectors.</span>
+<span class="sd">    </span>
+<span class="sd">    This function is used to calculate a finite difference apporximation</span>
+<span class="sd">    of curl. Its starting point is similar to a finite difference </span>
+<span class="sd">    approximation of a partial derivative, where you use both the </span>
+<span class="sd">    recoded change in the function and what you differentiate with respect to.</span>
+<span class="sd">    In practice this calculate an array of in independent curl operations,</span>
+<span class="sd">    as given by a single step.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    delta_x : ndarray</span>
+<span class="sd">        An array of the finite difference in the considered step.</span>
+<span class="sd">    delta_field : ndarray</span>
+<span class="sd">        An array of the finite difference of the field under</span>
+<span class="sd">        the relevant considered step.</span>
+<span class="sd">    target_index : int, optional</span>
+<span class="sd">        The index of the dimension of the curl that should be given as output.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        An array of the curl-like quantity,</span>
+<span class="sd">        but only target_index dimension of it.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; vecs = delta(np.arange(15).reshape(5,3))</span>
+<span class="sd">    &gt;&gt;&gt; curl(vecs,vecs)</span>
+<span class="sd">    array([0., 0., 0., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; curl(pack_3d(np.ones((4,)),-1.5 * np.ones((4,)),np.zeros((4,))),vecs)</span>
+<span class="sd">    array([5., 5., 5., 5.])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">index_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">target_index</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span>
+    <span class="n">index_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">target_index</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span>
+    <span class="c1"># if delta_left is None:</span>
+        <span class="c1"># if left is None:</span>
+            <span class="c1"># raise ValueError(&quot;Either left or delta_left must be specified.&quot;)</span>
+        <span class="c1"># delta_left = delta(left)</span>
+    <span class="c1"># if delta_right is None:</span>
+        <span class="c1"># if right is None:</span>
+            <span class="c1"># raise ValueError(&quot;Either right or delta_right must be specified.&quot;)</span>
+        <span class="c1"># delta_right = delta(right)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">delta_field</span><span class="p">[:,</span> <span class="n">index_y</span><span class="p">]</span> <span class="o">/</span> <span class="n">delta_x</span><span class="p">[:,</span> <span class="n">index_x</span><span class="p">]</span>
+            <span class="o">-</span> <span class="n">delta_field</span><span class="p">[:,</span> <span class="n">index_x</span><span class="p">]</span> <span class="o">/</span> <span class="n">delta_x</span><span class="p">[:,</span> <span class="n">index_y</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="inclination"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.inclination">[docs]</a><span class="k">def</span> <span class="nf">inclination</span><span class="p">(</span><span class="n">vectors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Calculates the inclination of vectors.</span>
+<span class="sd">    </span>
+<span class="sd">    Calculate the inclination for each individual vector in vectors.</span>
+<span class="sd">    This means this is equivalent to the tilt of the vectors toward</span>
+<span class="sd">    the third dimention.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vectors : ndarray</span>
+<span class="sd">        An array of 3d vectors.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        An array of scalars, where each is the inclination</span>
+<span class="sd">        of their respective vector in vectors.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; inclination(np.arange(15).reshape(5,3))</span>
+<span class="sd">    array([1.10714872, 0.78539816, 0.71469295, 0.68539502, 0.66942998])</span>
+<span class="sd">    &gt;&gt;&gt; np.sin(_)</span>
+<span class="sd">    array([0.89442719, 0.70710678, 0.65538554, 0.63297887, 0.62053909])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">length_first_second_dims</span> <span class="o">=</span> <span class="p">(</span><span class="n">vectors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">vectors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">vectors</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">length_first_second_dims</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="request_data"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.request_data">[docs]</a><span class="k">def</span> <span class="nf">request_data</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                 <span class="n">end</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                 <span class="n">user_file</span><span class="o">=</span><span class="s1">&#39;safe_xml.txt&#39;</span><span class="p">,</span>
+                 <span class="n">credentials</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">password</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">target_file</span><span class="o">=</span><span class="s1">&#39;tempdata.cdf&#39;</span><span class="p">,</span>
+                 <span class="n">filters</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;parameter&#39;</span><span class="p">:</span> <span class="s1">&#39;Latitude&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;minimum&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.</span><span class="p">,</span>
+                           <span class="s1">&#39;maximum&#39;</span><span class="p">:</span> <span class="mf">90.</span><span class="p">}],</span>
+                 <span class="n">target_url</span><span class="o">=</span><span class="s1">&#39;https://staging.viresdisc.vires.services/openows&#39;</span><span class="p">,</span>
+                 <span class="n">collection</span><span class="o">=</span><span class="s1">&#39;SW_OPER_MAGA_LR_1B&#39;</span><span class="p">,</span>
+                 <span class="n">product_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;auxiliaries&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;QDLat&#39;</span><span class="p">,</span> <span class="s1">&#39;QDLon&#39;</span><span class="p">]},</span>
+                 <span class="n">sampling_step</span><span class="o">=</span><span class="s1">&#39;PT1S&#39;</span><span class="p">,</span>
+                 <span class="n">models</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;MCO_SHA_2C&#39;</span><span class="p">,</span> <span class="s1">&#39;MLI_SHA_2C&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;MMA_SHA_2C-Primary&#39;</span><span class="p">,</span> <span class="s1">&#39;MMA_SHA_2C-Secondary&#39;</span><span class="p">],</span>
+                 <span class="n">measurements</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;B_NEC&#39;</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot; Request data from a vires server.</span>
+<span class="sd">    </span>
+<span class="sd">    This function sets up a request to a vires server.</span>
+<span class="sd">    It is a wrapper on viresclient functionality,</span>
+<span class="sd">    where default arguments have been provided.</span>
+<span class="sd">    </span>
+<span class="sd">    The data will be saved to as a cdf file.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    start : datatime, optional</span>
+<span class="sd">        The inclusive starting time of the requested data.</span>
+<span class="sd">        Defaults to 1st of Janurary 2016</span>
+<span class="sd">    end : datetime, optional</span>
+<span class="sd">        The exclusive end time of the requested data.</span>
+<span class="sd">        Defaults to 2nd of Janurary 2016</span>
+<span class="sd">    user_file : str, optional</span>
+<span class="sd">        Filepath to the safe_user encrypted file with login credentials.</span>
+<span class="sd">        If set to None you will be prompted for login credentials in runtime.</span>
+<span class="sd">        Defaults to &#39;safe_xml.txt&#39;</span>
+<span class="sd">    password : str, optional</span>
+<span class="sd">        The password needed to decrypt user_file.</span>
+<span class="sd">        If not provided/set to None you will be prompted for it in runtime.</span>
+<span class="sd">    target_file : str, optional</span>
+<span class="sd">        Filepath for the output cdf file. Must include name and extension.</span>
+<span class="sd">        Defaults to &#39;tempdata.cdf&#39;</span>
+<span class="sd">    filters : list(dict), optional</span>
+<span class="sd">        A list of dictionaries, where each dictionary is the options</span>
+<span class="sd">        for a filter to be applied to the data.</span>
+<span class="sd">    target_url : str, optional</span>
+<span class="sd">        The full url for the server to request the data at.</span>
+<span class="sd">        Defaults to &#39;https://staging.viresdisc.vires.services/openows&#39;</span>
+<span class="sd">    collection : str, optional</span>
+<span class="sd">        See viresclient set_collection. Defaults to &#39;SW_OPER_MAGA_LR_1B&#39;.</span>
+<span class="sd">    product_options : dict, optional</span>
+<span class="sd">        Extra options to viresclient set_products.</span>
+<span class="sd">        Defaults to {&#39;auxiliaries&#39;: [&#39;QDLat&#39;, &#39;QDLon&#39;]}</span>
+<span class="sd">    sampling_step : str, optional</span>
+<span class="sd">        Describes the sampling frequency, </span>
+<span class="sd">        since vires may otherwise downsample the data.</span>
+<span class="sd">        The default is 1Hz by &#39;PT1S&#39;.</span>
+<span class="sd">    models : list(str), optional</span>
+<span class="sd">        The models calculated at the data points.</span>
+<span class="sd">        See viresclient set_products models for details.</span>
+<span class="sd">        Defaults to [</span>
+<span class="sd">        &#39;MCO_SHA_2C&#39;, &#39;MLI_SHA_2C&#39;,</span>
+<span class="sd">        &#39;MMA_SHA_2C-Primary&#39;, &#39;MMA_SHA_2C-Secondary&#39;]</span>
+<span class="sd">    measurements : list(str), optional</span>
+<span class="sd">        Measured quantities to be included for each data point.</span>
+<span class="sd">        Defaults to [&#39;F&#39;, &#39;B_NEC&#39;]</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; request_data() # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; request_data(date.datetime(2017, 7, 5),</span>
+<span class="sd">    ...              date.datetime(2017, 7, 6))# doctest: +SKIP</span>
+<span class="sd">                     </span>
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    These examples are skiped by doctest due to security reasons,</span>
+<span class="sd">    and unintentional side-effects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">credentials</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">user_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">credentials</span> <span class="o">=</span> <span class="n">safe_user</span><span class="o">.</span><span class="n">fetch_login</span><span class="p">(</span><span class="s1">&#39;safe_xml.txt&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span> <span class="o">=</span> <span class="n">safe_user</span><span class="o">.</span><span class="n">prompt_login_data</span><span class="p">()</span>
+            <span class="n">credentials</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span><span class="n">username</span><span class="p">,</span><span class="s1">&#39;password&#39;</span><span class="p">:</span><span class="n">password</span><span class="p">}</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="n">SwarmRequest</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">target_url</span><span class="p">,</span> <span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+                           <span class="c1"># **safe_user.fetch_login(&#39;safe_xml.txt&#39;))</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">set_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">set_products</span><span class="p">(</span><span class="n">measurements</span><span class="o">=</span><span class="n">measurements</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="n">models</span><span class="p">,</span>
+                         <span class="n">sampling_step</span><span class="o">=</span><span class="n">sampling_step</span><span class="p">,</span> <span class="o">**</span><span class="n">product_options</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nb">filter</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">set_range_filter</span><span class="p">(</span><span class="o">**</span><span class="nb">filter</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_between</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">target_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_cdf"><a class="viewcode-back" href="../../reference.html#swarmpyfac.utils.read_cdf">[docs]</a><span class="k">def</span> <span class="nf">read_cdf</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">**</span><span class="n">name_pairings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Read data from a cdf file.</span>
+<span class="sd">    </span>
+<span class="sd">    Read a cdf file and construct a dictionary based on</span>
+<span class="sd">    name_parings. This may open and read a file as a side-effect.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file : str or cdfread</span>
+<span class="sd">        The file to read the data from. </span>
+<span class="sd">        Accepts both a string filepath to the file and an opened cdfread file.</span>
+<span class="sd">    **name_pairings</span>
+<span class="sd">        Pairs of names used to link a name in the output with its </span>
+<span class="sd">        corrisponding name in the cdf file.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        The keys are the keywords used in name_parings,</span>
+<span class="sd">        while the values are the variables loaded from</span>
+<span class="sd">        the cdf file with the name of the corrisponding argument.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    We can directly ask for variables:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; from pyfac.utils import *  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; read_cdf(&#39;tempdata.cdf&#39;) # doctest: +SKIP</span>
+<span class="sd">    {}</span>
+<span class="sd">    &gt;&gt;&gt; read_cdf(&#39;tempdata.cdf&#39;, time=&#39;Timestamp&#39;) # doctest: +SKIP,+ELLIPSIS</span>
+<span class="sd">    {&#39;time&#39;: array([...])}</span>
+<span class="sd">    </span>
+<span class="sd">    We can also make use of predefined options:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; options = {&#39;time&#39;: &#39;Timestamp&#39;, &#39;B_base&#39;: &#39;B_NEC&#39;}</span>
+<span class="sd">    &gt;&gt;&gt; read_cdf(&#39;tempdata.cdf&#39;, **options) # doctest: +SKIP,+ELLIPSIS</span>
+<span class="sd">    {&#39;time&#39;: array([...]), &#39;B_base&#39;: array([[...]])}</span>
+<span class="sd">    </span>
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    These examples are skiped by doctest due to dependency </span>
+<span class="sd">    on the existance of a &#39;tempdata.cdf&#39; file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">cdflib</span><span class="o">.</span><span class="n">cdfread</span><span class="o">.</span><span class="n">CDF</span><span class="p">):</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">cdflib</span><span class="o">.</span><span class="n">CDF</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">file</span><span class="o">.</span><span class="n">varget</span><span class="p">(</span><span class="n">cdf_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">cdf_name</span> <span class="ow">in</span> <span class="n">name_pairings</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># Test docstrings</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">SwarmPyFAC 0.1.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Ask Neve Gamby.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>
