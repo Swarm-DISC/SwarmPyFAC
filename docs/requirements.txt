@@ -1,0 +1,6 @@
+numpy
+cdflib
+viresclient
+matplotlib
+scipy
+pycryptodome
