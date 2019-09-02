@@ -4,3 +4,9 @@ viresclient
 matplotlib
 scipy
 pycryptodome
+sphinx
+numpydoc
+hypothesis
+doctest
+unittest
+
