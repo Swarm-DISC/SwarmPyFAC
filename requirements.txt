@@ -9,4 +9,3 @@ numpydoc
 hypothesis
 doctest
 unittest
-
