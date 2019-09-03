@@ -33,7 +33,8 @@ Extra dependencies for handling the source version:
 
 Quick Start
 -----------
-The package handle imports of its own modules, so it is sufficient to import the base package. The different packages can be access from there:
+The package handle imports of its own modules, so it is sufficient to import the base package. The different packages can be access from there::
+
 .. code-block:: python
 
     >>> import swarmpyfac as fc
@@ -41,7 +42,8 @@ The package handle imports of its own modules, so it is sufficient to import the
     >>> fc.utils  # count as swarmpyfac.utils
     >>> fc.safety  # count as swarmpyfac.safety
 
-Calculating the field aligned currents based on swarm data for some periode:
+Calculating the field aligned currents based on swarm data for some periode::
+
 .. code-block:: python
 
     >>> import swarmpyfac as fc
