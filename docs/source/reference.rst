@@ -10,14 +10,6 @@ swarmpyfac.fac module
     :undoc-members:
     :show-inheritance:
 
-swarmpyfac.safety module
-************************
-
-.. automodule:: swarmpyfac.safety
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 swarmpyfac.utils module
 ***********************
 
@@ -25,3 +17,14 @@ swarmpyfac.utils module
     :members:
     :undoc-members:
     :show-inheritance:
+
+
+swarmpyfac.safety module
+************************
+
+.. automodule:: swarmpyfac.safety
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+    

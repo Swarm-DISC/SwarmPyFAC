@@ -12,6 +12,7 @@ Welcome to SwarmPyFAC's documentation!
    readme
    installation
    usage
+   moduleoverview
    reference
    changelog
 
