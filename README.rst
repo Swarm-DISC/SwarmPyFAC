@@ -2,7 +2,11 @@ Overview
 ========
 |docs| |version|
 
-The SwarmPyFAC package is used for calculating Field Aligned Currents based on cdf-files possibly downloaded via viresclient. It is seperated into 3 modules:
+The SwarmPyFAC package is used for calculating Geomagnetic Field-Aligned Currents based on cdf-files possibly downloaded via viresclient.
+
+Geomagnetic Field-Aligned Currents are current systems that connect the magnetosphere to the ionosphere, and one of the fundamental interactions between these two regions. These currents, as their name suggests, flow in a direction aligned with the local magnetic field. Swarm is able to estimate these currents using the horizontal component of the magnetic field information alongside a baseline magnetic field estimation. These can then be used with Ampere’s law to determine the currents that flowing in the field-aligned direction. More detailed information on this formulation can be found in Ritter et. al. (2013).
+
+The SwarmPyFAC package contains 3 modules:
 
 - ``swarmpyfac.fac``, the main module. It contains functions to calculate field aligned currents, and related scientific steps. It is rolled into the main package, so you can call its functionality directly from there.
 - ``swarmpyfac.utils``, the utility module. It contains functions for the underlaying mathematics, and should also be usefull for computing other products.
@@ -59,6 +63,13 @@ Documentation
 -------------
 See `swarmpyfac.readthedocs.io <https://swarmpyfac.readthedocs.io>`_.
 
+References
+----------
+Ritter, P., H. Lühr, and J. Rauberg (2013), Determining field-aligned currents with the Swarm constellation mission, Earth Planets Space, 65(11), 1285-1294. `doi: 10.5047/eps.2013.09.006  <https://doi.org/10.5047/eps.2013.09.006>`_
+
+
+See also:
+Swarm Level 2 product description: `Swarm_L2_FAC_single_product_description <https://earth-planets-space.springeropen.com/articles/10.5047/eps.2013.09.006>`_.
 
 Acknowledgments
 ---------------
