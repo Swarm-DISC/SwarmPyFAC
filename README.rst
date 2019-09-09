@@ -54,8 +54,8 @@ Calculating the field aligned currents based on swarm data for some periode:
     >>> import datetime as date
     >>> start = date.datetime(2016, 1, 1)
     >>> end = date.datetime(2016, 1, 2)
-    >>> output = fc.fac_from_file(start=start, end=end, credentials={})
-    >>> time, posision, __, fac, * = output
+    >>> output, input_data = fc.fac_from_file(start=start, end=end)
+    >>> time, position, __, fac, *___ = output
     
 The steps in ``fc.fac_from_file`` is broken down into other functions, which one can use and replace for their own needs.
 
