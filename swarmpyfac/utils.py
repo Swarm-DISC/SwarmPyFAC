@@ -745,6 +745,14 @@ def request_data(start=date.datetime(2016, 1, 1),
     data.to_file(target_file)
 
 
+def request_data_simple(
+        target_url='https://staging.viresdisc.vires.services/openows',
+        **options):
+    print('unused options:\n',options)
+    request = SwarmRequest(url=target_url)
+    pass
+
+
 def read_cdf(file, **name_pairings):
     """ Read data from a cdf file.
     
