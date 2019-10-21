@@ -7,3 +7,4 @@ pycryptodome
 sphinx
 numpydoc
 hypothesis
+twine
