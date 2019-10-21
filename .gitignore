@@ -1,6 +1,6 @@
 build/
 dist/
-testbed/
+penv/
 *.egg-info/
 *.egg
 *.py[cod]
