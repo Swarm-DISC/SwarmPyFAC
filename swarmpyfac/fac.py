@@ -67,7 +67,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as sii
 
-from . import safety as safe_user
+# from . import safety as safe_user
 from . import utils as sw
 
 _INKL_LIMIT = 30.
