@@ -78,12 +78,13 @@ __version__ = '0.1.3'
 __author__ = 'Ask Neve Gamby'
 
 import datetime as date
+import getpass
 import numpy as np
 import cdflib
 
-from viresclient import SwarmRequest
+from viresclient import SwarmRequest, ClientConfig
 
-from . import safety as safe_user
+# from . import safety as safe_user
 
 MU_0 = 4.0 * np.pi * 10**(-7)
 TO_RADIANS = np.pi / 180
