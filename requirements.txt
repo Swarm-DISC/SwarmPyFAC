@@ -3,7 +3,6 @@ cdflib
 viresclient
 matplotlib
 scipy
-pycryptodome
 sphinx
 numpydoc
 hypothesis
