@@ -16,7 +16,7 @@ import numpy as np
 import math
 
 
-from swarmpyfac import safety as su
+# from swarmpyfac import safety as su
 from swarmpyfac import utils as sw
 from swarmpyfac import fac as slim
 
@@ -198,90 +198,90 @@ class AlphaTestUtilTests(unittest.TestCase):
     
     
     
-class SafeUserHypothesisTests(unittest.TestCase):
+# class SafeUserHypothesisTests(unittest.TestCase):
     
-    @hyp.given(strat.text())
-    @hyp.example('')
-    def test_pad_unpad_invariance1(self, text):
-        self.assertEqual(su.remove_padding(su.add_padding1(text)), text)
+    # @hyp.given(strat.text())
+    # @hyp.example('')
+    # def test_pad_unpad_invariance1(self, text):
+        # self.assertEqual(su.remove_padding(su.add_padding1(text)), text)
         
-    @hyp.given(strat.text())
-    @hyp.example('')
-    def test_pad_unpad_invariance2(self, text):
-        self.assertEqual(su.remove_padding(su.add_padding2(text)), text)
+    # @hyp.given(strat.text())
+    # @hyp.example('')
+    # def test_pad_unpad_invariance2(self, text):
+        # self.assertEqual(su.remove_padding(su.add_padding2(text)), text)
         
-    @hyp.given(strat.text())
-    @hyp.example('')
-    def test_pad_unpad_invariance3(self, text):
-        self.assertEqual(su.remove_padding(su.add_padding3(text)), text)
+    # @hyp.given(strat.text())
+    # @hyp.example('')
+    # def test_pad_unpad_invariance3(self, text):
+        # self.assertEqual(su.remove_padding(su.add_padding3(text)), text)
         
-    @hyp.given(strat.text(),strat.integers(min_value=4, max_value=1<<15))
-    @hyp.example('other message',16)
-    @hyp.example('another message',8)
-    @hyp.example('',1)
-    def test_pad_unpad_invaraince1_other_base(self, text, base):
-        self.assertEqual(su.remove_padding(su.add_padding1(text,base)), text)
-        
-    @hyp.given(strat.text(),strat.integers(min_value=4, max_value=1<<15))
-    @hyp.example('other message',16)
-    @hyp.example('another message',8)
-    @hyp.example('',1)
-    def test_pad_unpad_invaraince2_other_base(self, text, base):
-        self.assertEqual(su.remove_padding(su.add_padding2(text,base)), text)
-        
-    @hyp.given(strat.text(),strat.integers(max_value=1<<15))
-    @hyp.example('other message',16)
-    @hyp.example('another message',8)
-    @hyp.example('',1)
-    def test_pad_unpad_invaraince2_other_base(self, text, base):
-        self.assertEqual(su.remove_padding(su.add_padding3(text,base)), text)
-        
-    # @hyp.given(strat.text(),strat.integers(min_value=4))
+    # @hyp.given(strat.text(),strat.integers(min_value=4, max_value=1<<15))
     # @hyp.example('other message',16)
     # @hyp.example('another message',8)
     # @hyp.example('',1)
-    # def test_pad_12_same_other_base(self, text, base):
-        # self.assertEqual(su.add_padding1(text,base), su.add_padding2(text,base))
+    # def test_pad_unpad_invaraince1_other_base(self, text, base):
+        # self.assertEqual(su.remove_padding(su.add_padding1(text,base)), text)
         
-    @hyp.given(strat.text(),strat.integers(min_value=4, max_value=1<<15))
-    @hyp.example('other message',16)
-    @hyp.example('another message',8)
-    @hyp.example('',1)
-    def test_pad_length_other_base(self, text, base):
-        a1 = su.add_padding1(text,base)
-        a2 = su.add_padding2(text,base)
-        a3 = su.add_padding3(text,base)
-        gt = lambda t,ref: self.assertTrue(len(t) > ref,'failed on: ' + str(len(t)) + ' > ' + str(ref))
-        gt(a1, base >>1)
-        gt(a2, base >>1)
-        gt(a3, base >>1)
-        gt(a3, base - len(text))
-        # self.assertTrue(len(a1) > base>>1)
-        # self.assertTrue(len(a2) > base>>1 )
-        # self.assertTrue(len(a3) > base>>1 )
-        # self.assertTrue(len(a3) > base - len(text) )
-        self.assertEqual(len(a1),len(a2))
-        self.assertTrue(len(a2) <= len(a3))
+    # @hyp.given(strat.text(),strat.integers(min_value=4, max_value=1<<15))
+    # @hyp.example('other message',16)
+    # @hyp.example('another message',8)
+    # @hyp.example('',1)
+    # def test_pad_unpad_invaraince2_other_base(self, text, base):
+        # self.assertEqual(su.remove_padding(su.add_padding2(text,base)), text)
         
-    @hyp.given(strat.text())
-    @hyp.example('')
-    def test_pad_len_mod_16_0_base(self, text):
-        self.assertEqual(len(su.add_padding1(text)) % 16, 0)
+    # @hyp.given(strat.text(),strat.integers(max_value=1<<15))
+    # @hyp.example('other message',16)
+    # @hyp.example('another message',8)
+    # @hyp.example('',1)
+    # def test_pad_unpad_invaraince2_other_base(self, text, base):
+        # self.assertEqual(su.remove_padding(su.add_padding3(text,base)), text)
         
-    @hyp.given(strat.text())
-    @hyp.example('')
-    def test_pad_len_mod_16_0_2(self, text):
-        self.assertEqual(len(su.add_padding2(text)) % 16, 0)
+    # # @hyp.given(strat.text(),strat.integers(min_value=4))
+    # # @hyp.example('other message',16)
+    # # @hyp.example('another message',8)
+    # # @hyp.example('',1)
+    # # def test_pad_12_same_other_base(self, text, base):
+        # # self.assertEqual(su.add_padding1(text,base), su.add_padding2(text,base))
         
-    @hyp.given(text=_reg_gen(r'({}{})*',_nice_text,r'{16}'), password=strat.text())
-    @hyp.example('','')
-    def test_encrypt_decrypt_invariance(self, text, password):
-        self.assertEqual(su.decrypt(su.encrypt(text, password), password), text)
+    # @hyp.given(strat.text(),strat.integers(min_value=4, max_value=1<<15))
+    # @hyp.example('other message',16)
+    # @hyp.example('another message',8)
+    # @hyp.example('',1)
+    # def test_pad_length_other_base(self, text, base):
+        # a1 = su.add_padding1(text,base)
+        # a2 = su.add_padding2(text,base)
+        # a3 = su.add_padding3(text,base)
+        # gt = lambda t,ref: self.assertTrue(len(t) > ref,'failed on: ' + str(len(t)) + ' > ' + str(ref))
+        # gt(a1, base >>1)
+        # gt(a2, base >>1)
+        # gt(a3, base >>1)
+        # gt(a3, base - len(text))
+        # # self.assertTrue(len(a1) > base>>1)
+        # # self.assertTrue(len(a2) > base>>1 )
+        # # self.assertTrue(len(a3) > base>>1 )
+        # # self.assertTrue(len(a3) > base - len(text) )
+        # self.assertEqual(len(a1),len(a2))
+        # self.assertTrue(len(a2) <= len(a3))
+        
+    # @hyp.given(strat.text())
+    # @hyp.example('')
+    # def test_pad_len_mod_16_0_base(self, text):
+        # self.assertEqual(len(su.add_padding1(text)) % 16, 0)
+        
+    # @hyp.given(strat.text())
+    # @hyp.example('')
+    # def test_pad_len_mod_16_0_2(self, text):
+        # self.assertEqual(len(su.add_padding2(text)) % 16, 0)
+        
+    # @hyp.given(text=_reg_gen(r'({}{})*',_nice_text,r'{16}'), password=strat.text())
+    # @hyp.example('','')
+    # def test_encrypt_decrypt_invariance(self, text, password):
+        # self.assertEqual(su.decrypt(su.encrypt(text, password), password), text)
     
-    @hyp.given(text=_reg_gen(r'{}*',_nice_text), password=strat.text())
-    @hyp.example('','')
-    def test_box_unbox_invariance(self, text, password):
-        self.assertEqual(su.unbox_content(su.box_content(text, password), password), text)
+    # @hyp.given(text=_reg_gen(r'{}*',_nice_text), password=strat.text())
+    # @hyp.example('','')
+    # def test_box_unbox_invariance(self, text, password):
+        # self.assertEqual(su.unbox_content(su.box_content(text, password), password), text)
     
 class UtilHypothesisTests(unittest.TestCase):
     
