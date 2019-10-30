@@ -649,7 +649,7 @@ def inclination(vectors):
     return np.arctan2(vectors[:, 2], length_first_second_dims)
 
 
-def request_data(start=date.datetime(2016, 1, 1),
+def request_data_old(start=date.datetime(2016, 1, 1),
                  end=date.datetime(2016, 1, 2),
                  user_file='safe_xml.txt',
                  credentials = None,
@@ -745,12 +745,69 @@ def request_data(start=date.datetime(2016, 1, 1),
     data.to_file(target_file)
 
 
-def request_data_simple(
-        target_url='https://staging.viresdisc.vires.services/openows',
-        **options):
-    print('unused options:\n',options)
-    request = SwarmRequest(url=target_url)
-    pass
+def build_credentials(
+        url=None,
+        token=None,
+        username=None,
+        password=None):
+    """ Generate a valid set of url and token or username/password combination
+    """
+    config = ClientConfig()
+    if url is None:
+        url = config.default_url
+    site_config = config.get_site_config(url)
+    if any([token, username, password]):
+        # If any of these are set/true, user-input will be used
+        if token:
+            credentials = {'token':token}
+            credentials['token'] = token
+        else:
+            if not username:
+                if 'username' in site_config:
+                    username = site_config['username']
+                else:
+                    username = input('Enter username: ')
+            if not password:
+                if 'password' in site_config and username == site_config['username']:
+                    password = site_config['password']
+                else:
+                    password = getpass.getpass('Enter password: ')
+            credentials = {'username':username, 'password':password}
+    else:
+        credentials = site_config
+    return url, credentials
+
+
+def request_data(
+        start=date.datetime(2016, 1, 1),
+        end=date.datetime(2016, 1, 2),
+        user_file='safe_xml.txt',
+        token=None,
+        username=None,
+        password=None,
+        target_file='tempdata.cdf',
+        filters=[{'parameter': 'Latitude',
+                  'minimum': -90.,
+                  'maximum': 90.}],
+        url='https://vires.services/ows',
+        collection='SW_OPER_MAGA_LR_1B',
+        product_options={'auxiliaries': ['QDLat', 'QDLon']},
+        sampling_step='PT1S',
+        models=['MCO_SHA_2C', 'MLI_SHA_2C',
+                'MMA_SHA_2C-Primary', 'MMA_SHA_2C-Secondary'],
+        measurements=['F', 'B_NEC']):
+        
+    url, credentials = build_credentials(url, token, username, password)
+    request = SwarmRequest(url=url, **credentials)
+    request.set_collection(collection)
+    request.set_products(measurements=measurements, models=models,
+                         sampling_step=sampling_step, **product_options)
+    for filter in filters:
+        request.set_range_filter(**filter)
+    data = request.get_between(start_time=start, end_time=end)
+    return data
+    
+
 
 
 def read_cdf(file, **name_pairings):
