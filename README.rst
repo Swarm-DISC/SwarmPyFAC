@@ -6,11 +6,10 @@ The SwarmPyFAC package is used for calculating Geomagnetic Field-Aligned Current
 
 Geomagnetic Field-Aligned Currents are current systems that connect the magnetosphere to the ionosphere, and one of the fundamental interactions between these two regions. These currents, as their name suggests, flow in a direction aligned with the local magnetic field. Swarm is able to estimate these currents using the horizontal component of the magnetic field information alongside a baseline magnetic field estimation. These can then be used with Ampere’s law to determine the currents that flowing in the field-aligned direction. More detailed information on this formulation can be found in Ritter et. al. (2013).
 
-The SwarmPyFAC package contains 3 modules:
+The SwarmPyFAC package contains 2 modules:
 
 - ``swarmpyfac.fac``, the main module. It contains functions to calculate field aligned currents, and related scientific steps. It is rolled into the main package, so you can call its functionality directly from there.
 - ``swarmpyfac.utils``, the utility module. It contains functions for the underlaying mathematics, and should also be usefull for computing other products.
-- ``swarmpyfac.safety``, the encryption module. It deals with storing credential information in a safe maner. Warning: This module is likely to be depreciated in the future.
 
 Installation
 ------------
@@ -26,7 +25,6 @@ Dependencies:
 - viresclient
 - matplotlib
 - scipy
-- pycryptodome
 
 Extra dependencies for handling the source version:
 
@@ -44,7 +42,6 @@ The package handle imports of its own modules, so it is sufficient to import the
     >>> import swarmpyfac as fc
     >>> fc  # count as swarmpyfac.fac
     >>> fc.utils  # count as swarmpyfac.utils
-    >>> fc.safety  # count as swarmpyfac.safety
 
 Calculating the field aligned currents based on swarm data for some periode:
 

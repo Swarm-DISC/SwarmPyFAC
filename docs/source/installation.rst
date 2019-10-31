@@ -12,7 +12,6 @@ Dependencies:
 - viresclient
 - matplotlib
 - scipy
-- pycryptodome
 
 Extra dependencies for handling the source version:
 
