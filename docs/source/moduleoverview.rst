@@ -11,10 +11,12 @@ swarmpyfac.fac module
 *********************
 
 .. automodule:: swarmpyfac.fac
+    :noindex:
 
 
 swarmpyfac.utils module
 ***********************
 
 .. automodule:: swarmpyfac.utils
+    :noindex:
 

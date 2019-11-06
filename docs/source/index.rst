@@ -16,6 +16,8 @@ Welcome to SwarmPyFAC's documentation!
    reference
    changelog
 
+.. include:: readme.rst
+
 
 Indices and tables
 ==================
