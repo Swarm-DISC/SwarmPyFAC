@@ -62,6 +62,148 @@ hyp.settings.load_profile('fast')
 
 _mult_save_floats = ((),{'min_value':0. - 10.**100, 'max_value':10.**100})
 
+
+def _maybe_pops(source, keys):
+    """ Create a new dict based on the intersection of source keys and keys..
+    
+    Create a new dictionary. Each pair of key and value comes from source.
+    Inclusion in the result is based on intersection of source's keys and keys.
+    
+    Parameters
+    ----------
+    source : dict
+        A dictionary forming the base of the output.
+        The result is a subset of this dictionary.
+    keys : iterable(immutable)
+        Effectively a list of the keys to extract from source
+        (though any iterable should do).
+        The keys do not need to be in source, and only those also
+        in source will be in the result.
+        
+    Result
+    ------
+    dict
+        The dict of key value pairs based on the intersection of 
+        the source's keys and keys.
+        
+    Examples
+    --------
+    >>> from pyfac.utils import *  # doctest: +SKIP
+    >>> options = {'flag':True, 'int':5, 'float':3.5,'array':np.arange(5)}
+    >>> maybe_pops(options,['flag'])
+    {'flag': True}
+    >>> maybe_pops(options,['int','float'])
+    {'int': 5, 'float': 3.5}
+    >>> maybe_pops(options,['flag','array'])
+    {'array': array([0, 1, 2, 3, 4])}
+    >>> options
+    {}
+    """
+
+    return {key: source.pop(key) for key in keys if key in source}
+
+
+def _maybe_keys(source, keys):
+    """ Create a new dict, by poping the intersection of source's keys and keys.
+    
+    Create a new dictionary. Each pair of key and value comes from source.
+    Inclusion in the result is based on intersection of source's keys and keys.
+    This function has the side-effect that the key-value pairs in the result
+    are removed from source (poped).
+    
+    Parameters
+    ----------
+    source : dict
+        A dictionary forming the base of the output.
+        The result is a subset of this dictionary.
+        There (may) be side-effect on this, of the form that some
+        key-value pairs (may) be removed.
+    keys : iterable(immutable)
+        Effectively a list of the keys to extract from source
+        (though any iterable should do).
+        The keys do not need to be in source, and only those also
+        in source will be in the result.
+        
+    Result
+    ------
+    dict
+        The dict of key value pairs based on the intersection of 
+        the source's keys and keys.
+        
+    Examples
+    --------
+    >>> from pyfac.utils import *  # doctest: +SKIP
+    >>> options = {'flag':True, 'int':5, 'float':3.5,'array':np.arange(5)}
+    >>> maybe_keys(options,['flag'])
+    {'flag': True}
+    >>> maybe_keys(options,['int','float'])
+    {'int': 5, 'float': 3.5}
+    >>> maybe_keys(options,['flag','array'])
+    {'flag': True, 'array': array([0, 1, 2, 3, 4])}
+    >>> options
+    {'flag': True, 'int': 5, 'float': 3.5, 'array': array([0, 1, 2, 3, 4])}
+    """
+    return {key: source[key] for key in keys if key in source}
+
+
+def _call(function, dict_, *args, use_pop=None, **kwargs):
+    """ Call a function with arguments mixed from different sources.
+    
+    Call a function, by mixing the arguments for the function.
+    Specifically it extract extra parameters from `dict_` 
+    to use as default keyword arguments in case they have not
+    been specified otherwise.
+    If the function called accepts `**kwargs`, then all `dict_`
+    arguments not otherwise relevant will also be added,
+    so they can be passed further down possible call chains.
+    
+    Parameters
+    ----------
+    function : a -> b
+        A function to be called with the composed arguments.
+        Note that the argument names for this function is used
+        to determine which keyword arguments to extract from `dict_`
+    `dict_` : dict
+        A directory of keyword argument pairs that might be 
+        keyword arguments for the function.
+        There is no requirement for any overlap with argument names
+        of function, but only the overlap is used here.
+    *args
+        The positional arguments to be passed to function.
+    use_pop : boolean, optional
+        A flag for whether the arguments in `dict_` used in the call
+        should be removed from dict.
+        Defaults to False (None, which evaluates to False).
+    **kwargs
+        The keyword arguments to be passed to the function.
+        These keyword arguments takes priority over those in `_dict`.
+        
+    Returns
+    -------
+    ?
+        The result of the function call.
+        
+    Examples
+    --------
+    Base use:
+    >>> from pyfac.utils import *  # doctest: +SKIP
+    >>> options = {'password':'MyPassword','IV':16*'\x0F','target_index':1}
+    >>> call(safe_user.box_content,options,'bla') # doctest: +ELLIPSIS
+    b'...'
+    """
+    names = list(function.__code__.co_varnames[:function.__code__.co_argcount])
+    residual = [name for name in names[len(args):] if name not in kwargs]
+    maybe_get = _maybe_pops if use_pop else _maybe_keys
+    options = maybe_get(dict_, residual)
+    if function.__code__.co_flags & 0x08: #this flag is true if function as a **kwargs
+        # consider the optimization of making a set(names) for faster lookups below
+        options.update({k:v for k,v in dict_.items() if k not in names})
+        # consider whether use_pop should be inheireted
+        # if use_pop is not None:
+            # options.update({'use_pop':use_pop})
+    return function(*args, **kwargs, **options)
+    
+
 def _reg_gen(text,*args):
     return strat.from_regex(r'\A' + text.format(*args)+ r'\Z')
 
@@ -150,13 +292,13 @@ def _delta_index(first,second,relative_delta=0.1**1,absolute_delta=0.1**14):
 def _close(first,second,relative_delta=1.e-14,absolute_delta=0, other_value=None,coordinate=(),find_other=None,**options):
     # consider setting absolute_delta default to 1.e-14 or 1.e-32, though 0 still works.
     if other_value is None:
-        other_value = 0. if find_other is None else sw.call(find_other,options,*coordinate)
+        other_value = 0. if find_other is None else _call(find_other,options,*coordinate)
     return abs(first-second) <= absolute_delta + relative_delta*max(abs(first),abs(second),abs(other_value))
     
 def _all_close(first,second, coordinate=(), **options):
     if not hasattr(first,'__len__'):
-        return sw.call(_close,options,first,second,coordinate=coordinate) #_close(first,second)
-    return all([sw.call(_all_close,options,one,two,coordinate=coordinate+(i,)) for i,(one,two) in enumerate(zip(first,second))])
+        return _call(_close,options,first,second,coordinate=coordinate) #_close(first,second)
+    return all([_call(_all_close,options,one,two,coordinate=coordinate+(i,)) for i,(one,two) in enumerate(zip(first,second))])
     
     
 def _assert_array_close(self, first, second, msg=None, **options):
@@ -169,7 +311,7 @@ def _assert_array_close(self, first, second, msg=None, **options):
         except Exception:
             pass
         msg = ' '.join(msg_comp)
-    self.assertTrue(sw.call(_all_close, options,first,second,left=first,right=second),msg)
+    self.assertTrue(_call(_all_close, options,first,second,left=first,right=second),msg)
     #self.assertTrue(np.allclose(first,second),msg)
     
 def _assert_array_equal(self, first, second, msg=None):
