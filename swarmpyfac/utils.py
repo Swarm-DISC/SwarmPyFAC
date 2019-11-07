@@ -720,8 +720,8 @@ def request_data_old(start=date.datetime(2016, 1, 1),
     Examples
     --------
     >>> from pyfac.utils import *  # doctest: +SKIP
-    >>> request_data() # doctest: +SKIP
-    >>> request_data(date.datetime(2017, 7, 5),
+    >>> request_data_old() # doctest: +SKIP
+    >>> request_data_old(date.datetime(2017, 7, 5),
     ...              date.datetime(2017, 7, 6))# doctest: +SKIP
                      
     Note
@@ -782,7 +782,6 @@ def build_credentials(
 def request_data(
         start=date.datetime(2016, 1, 1),
         end=date.datetime(2016, 1, 2),
-        user_file='safe_xml.txt',
         token=None,
         username=None,
         password=None,
@@ -797,6 +796,74 @@ def request_data(
         models=['MCO_SHA_2C', 'MLI_SHA_2C',
                 'MMA_SHA_2C-Primary', 'MMA_SHA_2C-Secondary'],
         measurements=['F', 'B_NEC']):
+    """ Request data from a vires server.
+    
+    This function sets up a request to a vires server.
+    It is a wrapper on viresclient functionality,
+    where default arguments have been provided.
+    
+    The data will be saved to as a cdf file.
+    
+    Parameters
+    ----------
+    start : datatime, optional
+        The inclusive starting time of the requested data.
+        Defaults to 1st of Janurary 2016
+    end : datetime, optional
+        The exclusive end time of the requested data.
+        Defaults to 2nd of Janurary 2016
+    token : str, optional
+        Token for authenticating with the target_url.
+        You need either a token or a username/password combination.
+        The default options for the website will be used if all are set to None.
+    username : str, optional
+        username for authenticating with the target_url.
+        You need either a token or a username/password combination.
+        The default options for the website will be used if all are set to None.
+    password : str, optional
+        username for authenticating with the target_url.
+        You need either a token or a username/password combination.
+        The default options for the website will be used if all are set to None.
+    target_file : str, optional
+        Filepath for the output cdf file. Must include name and extension.
+        Defaults to 'tempdata.cdf'
+    filters : list(dict), optional
+        A list of dictionaries, where each dictionary is the options
+        for a filter to be applied to the data.
+    target_url : str, optional
+        The full url for the server to request the data at.
+        Defaults to 'https://staging.viresdisc.vires.services/openows'
+    collection : str, optional
+        See viresclient set_collection. Defaults to 'SW_OPER_MAGA_LR_1B'.
+    product_options : dict, optional
+        Extra options to viresclient set_products.
+        Defaults to {'auxiliaries': ['QDLat', 'QDLon']}
+    sampling_step : str, optional
+        Describes the sampling frequency, 
+        since vires may otherwise downsample the data.
+        The default is 1Hz by 'PT1S'.
+    models : list(str), optional
+        The models calculated at the data points.
+        See viresclient set_products models for details.
+        Defaults to [
+        'MCO_SHA_2C', 'MLI_SHA_2C',
+        'MMA_SHA_2C-Primary', 'MMA_SHA_2C-Secondary']
+    measurements : list(str), optional
+        Measured quantities to be included for each data point.
+        Defaults to ['F', 'B_NEC']
+    
+    Examples
+    --------
+    >>> from pyfac.utils import *  # doctest: +SKIP
+    >>> request_data() # doctest: +SKIP
+    >>> request_data(date.datetime(2017, 7, 5),
+    ...              date.datetime(2017, 7, 6))# doctest: +SKIP
+                     
+    Note
+    ----
+    These examples are skiped by doctest due to security reasons,
+    and unintentional side-effects.
+    """
         
     url, credentials = build_credentials(url, token, username, password)
     request = SwarmRequest(url=url, **credentials)
