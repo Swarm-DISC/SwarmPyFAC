@@ -411,7 +411,7 @@ def fetch_data(force_download=False, temp_file='tempdata.cdf',**options):
     """
     name_pairings = options.pop('name_pairings',_name_pairings)
     if temp_file is None or not os.path.isfile(temp_file) or force_download:
-        sw.call(sw.request_data,options,target_file=temp_file)
+        sw.request_data(**options, target_file=temp_file)
     return sw.read_cdf(temp_file, **name_pairings)
 
 
@@ -473,7 +473,7 @@ def fac_from_file(**options):
     >>> fac_from_file()  # doctest: +ELLIPSIS, +SKIP
     (array([...]), array([[...]]), array([...]), array([...]), array([[...]]), array([[...]]), array([[...]]), array([...]))
     """
-    input_data = sw.call(fetch_data, options, use_pop=False)
+    input_data = fetch_data(**options, use_pop=False)
     input_data['time'] *= 0.001  # conversion to seconds
     return (single_sat_fac_full(input_data),
             input_data)
