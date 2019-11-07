@@ -7,26 +7,10 @@ the viresclient python client.
 
 There is a mix of general constants, such as the permuability of vacum,
 and different types of functions.
-The functions can generally be categorised into three types:
-Higher order functions, functions for working on arrays 
-of scalars or vectors, and functions to work with viresclient.
+The functions can generally be categorised into twi types:
+Functions for working on arrays of scalars or vectors,
+and functions to work with viresclient.
 These categories have their own sections, with a short descriptions on each.
-
-Higher Order Functions
-----------------------
-Higher order functions are functions that operates on other functions.
-This section also contains utilities for higher other higher order functions.
-
-call
-    A function to call other functions.
-    Its main use is propergating options down the call stack.
-maybe_pops
-    A utility for call, works kind of like an intersection,
-    but pops (remove and return) key-value pairs from a dictionary.
-maybe_keys
-    A utility for call, works kind of like an intersection,
-    but returns key-value pairs from a dictionary.
-
     
 Array Utilities
 ---------------
