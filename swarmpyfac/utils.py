@@ -587,6 +587,7 @@ def request_data_old(start=date.datetime(2016, 1, 1),
         request.set_range_filter(**filter)
     data = request.get_between(start_time=start, end_time=end)
     data.to_file(target_file)
+    # return data
 
 
 def build_credentials(
@@ -716,7 +717,8 @@ def request_data(
     for filter in filters:
         request.set_range_filter(**filter)
     data = request.get_between(start_time=start, end_time=end)
-    return data
+    data.to_file(target_file)
+    # return data
     
 
 
