@@ -21,3 +21,11 @@ install:
     - python -m pip install -e .
     
 script: python tests
+
+
+deploy:
+    provider: pypi
+    user: "__token__"
+    on:
+        branch: release
+    skip_existing: true
