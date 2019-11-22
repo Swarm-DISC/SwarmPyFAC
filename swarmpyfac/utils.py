@@ -350,6 +350,7 @@ def delta(vectors):
     array([[ -1,   1,   3],
            [  7, -14,   1]])
     """
+    assert len(vectors) >= 2
     return vectors[1:] - vectors[:-1]
 
 
@@ -378,6 +379,7 @@ def means(vectors):
     array([[ 0.5,  0.5,  1.5],
            [ 3.5, -6. ,  3.5]])
     """
+    assert len(vectors) >= 2
     return (vectors[1:] + vectors[:-1]) * 0.5
 
 
@@ -449,6 +451,7 @@ def curl(delta_x, delta_field, target_index=2):
     >>> curl(pack_3d(np.ones((4,)),-1.5 * np.ones((4,)),np.zeros((4,))),vecs)
     array([5., 5., 5., 5.])
     """
+    assert target_index // 3 == 0
     index_x = (target_index+1) % 3
     index_y = (target_index+2) % 3
     # if delta_left is None:
