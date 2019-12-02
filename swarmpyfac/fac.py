@@ -473,7 +473,7 @@ def fac_from_file(**options):
     >>> fac_from_file()  # doctest: +ELLIPSIS, +SKIP
     (array([...]), array([[...]]), array([...]), array([...]), array([[...]]), array([[...]]), array([[...]]), array([...]))
     """
-    input_data = fetch_data(**options, use_pop=False)
+    input_data = fetch_data(**options)
     input_data['time'] *= 0.001  # conversion to seconds
     return (single_sat_fac_full(input_data),
             input_data)
