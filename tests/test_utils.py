@@ -2,6 +2,8 @@
 import pytest
 import numpy as np
 import swarmpyfac.utils as utils
+from unittest.mock import patch
+import viresclient
 
 
 def test_pack_3d_examples():
@@ -125,7 +127,10 @@ def test_build_credentials_examples():
     pass
     
     
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.viresclient
 def test_request_data_examples():
-    assert False
+    # assert False
+    with patch('viresclient.ReturnedData.to_file') as mock:
+        utils.request_data()
+    assert True
