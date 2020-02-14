@@ -23,7 +23,6 @@ install:
 script:
     - python tests
     - pytest tests
-    - pytest tests -m viresclient
 
 
 deploy:

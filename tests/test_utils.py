@@ -135,6 +135,6 @@ def test_request_data_examples():
     with patch('viresclient.ReturnedData.to_file') as mock:
         username = os.environ.get('VIRES_USERNAME')
         password = os.environ.get('VIRES_PASSWORD')
-        print(username,password) # THIS IS ONLY TO BE USE WITH TEST PASSWORD§!!!!!!!
+        # print(username,password) # THIS IS ONLY TO BE USE WITH TEST PASSWORD§!!!!!!!
         utils.request_data(username=username, password=password)
     assert True
