@@ -4,6 +4,7 @@ import numpy as np
 import swarmpyfac.utils as utils
 from unittest.mock import patch
 import viresclient
+import os
 
 
 def test_pack_3d_examples():
@@ -132,5 +133,7 @@ def test_build_credentials_examples():
 def test_request_data_examples():
     # assert False
     with patch('viresclient.ReturnedData.to_file') as mock:
-        utils.request_data()
+        username = os.environ.get('VIRES_USERNAME')
+        password = os.environ.get('VIRES_PASSWORD')
+        utils.request_data(username=username, password=password)
     assert True
