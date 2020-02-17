@@ -133,8 +133,6 @@ def test_build_credentials_examples():
 def test_request_data_examples():
     # assert False
     with patch('viresclient.ReturnedData.to_file') as mock:
-        username = os.environ.get('VIRES_USERNAME')
-        password = os.environ.get('VIRES_PASSWORD')
-        # print(username,password) # THIS IS ONLY TO BE USE WITH TEST PASSWORD§!!!!!!!
-        utils.request_data(username=username, password=password)
+        token = os.environ.get('VIRES_TOKEN')
+        utils.request_data(token=token)
     assert True
