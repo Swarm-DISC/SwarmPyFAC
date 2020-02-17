@@ -507,6 +507,7 @@ def request_data(
         models=['MCO_SHA_2C', 'MLI_SHA_2C',
                 'MMA_SHA_2C-Primary', 'MMA_SHA_2C-Secondary'],
         measurements=['F', 'B_NEC'],
+        to_file=True,
         **credentials):
     """ Request data from a vires server.
     
@@ -551,6 +552,9 @@ def request_data(
     measurements : list(str), optional
         Measured quantities to be included for each data point.
         Defaults to ['F', 'B_NEC']
+    to_file : boolean, optional
+        If set to true, the the result will be saved to a file as cdf, otherwise the datastructure will be returned as is.
+        Defaults to True.
     **credentials : **str, optional
         extra parameters to pass to SwarmRequest. Intented for passing credentails (though other options are also possible). It is backwards compatible with calls using parameter names for credentials. The specific credentials are as below:
         token : str, optional
@@ -586,8 +590,10 @@ def request_data(
     for filter in filters:
         request.set_range_filter(**filter)
     data = request.get_between(start_time=start, end_time=end)
-    data.to_file(target_file)
-    # return data
+    if to_file:
+        data.to_file(target_file)
+    else:
+        return data
     
 
 

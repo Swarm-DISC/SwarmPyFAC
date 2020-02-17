@@ -123,16 +123,26 @@ def test_inclination_examples():
         np.array([0.89442719, 0.70710678, 0.65538554, 0.63297887, 0.62053909])
         )
     
-def test_build_credentials_examples():
-    """ no current examples, also slated for removal"""
-    pass
     
-    
-# @pytest.mark.skip
 @pytest.mark.viresclient
 def test_request_data_examples():
     # assert False
     with patch('viresclient.ReturnedData.to_file') as mock:
         token = os.environ.get('VIRES_TOKEN')
         utils.request_data(token=token)
-    assert True
+        assert mock.call_count == 1
+        utils.request_data(
+            date.datetime(2017, 7, 5),
+            date.datetime(2017, 7, 6),
+            toten=token)
+        assert mock.call_count == 2
+            
+        
+@pytest.mark.viresclient
+def test_read_cdf():
+    pass
+    # try:
+        # token = os.environ.get('VIRES_TOKEN')
+        # data = utils.request_data(token=token,to_file=False)
+        
+
