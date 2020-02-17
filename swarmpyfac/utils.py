@@ -493,146 +493,9 @@ def inclination(vectors):
     return np.arctan2(vectors[:, 2], length_first_second_dims)
 
 
-# def request_data_old(start=date.datetime(2016, 1, 1),
-                 # end=date.datetime(2016, 1, 2),
-                 # user_file='safe_xml.txt',
-                 # credentials = None,
-                 # password = None,
-                 # target_file='tempdata.cdf',
-                 # filters=[{'parameter': 'Latitude',
-                           # 'minimum': -90.,
-                           # 'maximum': 90.}],
-                 # target_url='https://staging.viresdisc.vires.services/openows',
-                 # collection='SW_OPER_MAGA_LR_1B',
-                 # product_options={'auxiliaries': ['QDLat', 'QDLon']},
-                 # sampling_step='PT1S',
-                 # models=['MCO_SHA_2C', 'MLI_SHA_2C',
-                         # 'MMA_SHA_2C-Primary', 'MMA_SHA_2C-Secondary'],
-                 # measurements=['F', 'B_NEC']):
-    # """ Request data from a vires server.
-    
-    # This function sets up a request to a vires server.
-    # It is a wrapper on viresclient functionality,
-    # where default arguments have been provided.
-    
-    # The data will be saved to as a cdf file.
-    
-    # Parameters
-    # ----------
-    # start : datatime, optional
-        # The inclusive starting time of the requested data.
-        # Defaults to 1st of Janurary 2016
-    # end : datetime, optional
-        # The exclusive end time of the requested data.
-        # Defaults to 2nd of Janurary 2016
-    # user_file : str, optional
-        # Filepath to the safe_user encrypted file with login credentials.
-        # If set to None you will be prompted for login credentials in runtime.
-        # Defaults to 'safe_xml.txt'
-    # password : str, optional
-        # The password needed to decrypt user_file.
-        # If not provided/set to None you will be prompted for it in runtime.
-    # target_file : str, optional
-        # Filepath for the output cdf file. Must include name and extension.
-        # Defaults to 'tempdata.cdf'
-    # filters : list(dict), optional
-        # A list of dictionaries, where each dictionary is the options
-        # for a filter to be applied to the data.
-    # target_url : str, optional
-        # The full url for the server to request the data at.
-        # Defaults to 'https://staging.viresdisc.vires.services/openows'
-    # collection : str, optional
-        # See viresclient set_collection. Defaults to 'SW_OPER_MAGA_LR_1B'.
-    # product_options : dict, optional
-        # Extra options to viresclient set_products.
-        # Defaults to {'auxiliaries': ['QDLat', 'QDLon']}
-    # sampling_step : str, optional
-        # Describes the sampling frequency, 
-        # since vires may otherwise downsample the data.
-        # The default is 1Hz by 'PT1S'.
-    # models : list(str), optional
-        # The models calculated at the data points.
-        # See viresclient set_products models for details.
-        # Defaults to [
-        # 'MCO_SHA_2C', 'MLI_SHA_2C',
-        # 'MMA_SHA_2C-Primary', 'MMA_SHA_2C-Secondary']
-    # measurements : list(str), optional
-        # Measured quantities to be included for each data point.
-        # Defaults to ['F', 'B_NEC']
-    
-    # Examples
-    # --------
-    # >>> from pyfac.utils import *  # doctest: +SKIP
-    # >>> request_data_old() # doctest: +SKIP
-    # >>> request_data_old(date.datetime(2017, 7, 5),
-    # ...              date.datetime(2017, 7, 6))# doctest: +SKIP
-                     
-    # Note
-    # ----
-    # These examples are skiped by doctest due to security reasons,
-    # and unintentional side-effects.
-    
-    # Warning
-    # -------
-    # This is the older version of request_data used for 
-    # """
-    # if credentials is None:
-        # if user_file is not None:
-            # credentials = safe_user.fetch_login('safe_xml.txt')
-        # else:
-            # (username, password) = safe_user.prompt_login_data()
-            # credentials = {'username':username,'password':password}
-    # request = SwarmRequest(url=target_url, **credentials)
-                           # # **safe_user.fetch_login('safe_xml.txt'))
-    # request.set_collection(collection)
-    # request.set_products(measurements=measurements, models=models,
-                         # sampling_step=sampling_step, **product_options)
-    # for filter in filters:
-        # request.set_range_filter(**filter)
-    # data = request.get_between(start_time=start, end_time=end)
-    # data.to_file(target_file)
-    # # return data
-
-
-def build_credentials(
-        url=None,
-        token=None,
-        username=None,
-        password=None):
-    """ Generate a valid set of url and token or username/password combination
-    """
-    config = ClientConfig()
-    if url is None:
-        url = config.default_url
-    site_config = config.get_site_config(url)
-    if any([token, username, password]):
-        # If any of these are set/true, user-input will be used
-        if token:
-            credentials = {'token':token}
-            credentials['token'] = token
-        else:
-            if not username:
-                if 'username' in site_config:
-                    username = site_config['username']
-                else:
-                    username = input('Enter username: ')
-            if not password:
-                if 'password' in site_config and username == site_config['username']:
-                    password = site_config['password']
-                else:
-                    password = getpass.getpass('Enter password: ')
-            credentials = {'username':username, 'password':password}
-    else:
-        credentials = site_config
-    return url, credentials
-
-
 def request_data(
         start=date.datetime(2016, 1, 1),
         end=date.datetime(2016, 1, 2),
-        token=None,
-        username=None,
-        password=None,
         target_file='tempdata.cdf',
         filters=[{'parameter': 'Latitude',
                   'minimum': -90.,
@@ -643,7 +506,8 @@ def request_data(
         sampling_step='PT1S',
         models=['MCO_SHA_2C', 'MLI_SHA_2C',
                 'MMA_SHA_2C-Primary', 'MMA_SHA_2C-Secondary'],
-        measurements=['F', 'B_NEC']):
+        measurements=['F', 'B_NEC'],
+        **credentials):
     """ Request data from a vires server.
     
     This function sets up a request to a vires server.
@@ -660,18 +524,6 @@ def request_data(
     end : datetime, optional
         The exclusive end time of the requested data.
         Defaults to 2nd of Janurary 2016
-    token : str, optional
-        Token for authenticating with the target_url.
-        You need either a token or a username/password combination.
-        The default options for the website will be used if all are set to None.
-    username : str, optional
-        username for authenticating with the target_url.
-        You need either a token or a username/password combination.
-        The default options for the website will be used if all are set to None.
-    password : str, optional
-        username for authenticating with the target_url.
-        You need either a token or a username/password combination.
-        The default options for the website will be used if all are set to None.
     target_file : str, optional
         Filepath for the output cdf file. Must include name and extension.
         Defaults to 'tempdata.cdf'
@@ -699,6 +551,20 @@ def request_data(
     measurements : list(str), optional
         Measured quantities to be included for each data point.
         Defaults to ['F', 'B_NEC']
+    **credentials : **str, optional
+        extra parameters to pass to SwarmRequest. Intented for passing credentails (though other options are also possible). It is backwards compatible with calls using parameter names for credentials. The specific credentials are as below:
+        token : str, optional
+            Token for authenticating with the target_url.
+            You need either a token or a username/password combination.
+            The default options for the website will be used if all are set to None.
+        username : str, optional
+            username for authenticating with the target_url.
+            You need either a token or a username/password combination.
+            The default options for the website will be used if all are set to None.
+        password : str, optional
+            username for authenticating with the target_url.
+            You need either a token or a username/password combination.
+            The default options for the website will be used if all are set to None.
     
     Examples
     --------
@@ -713,7 +579,6 @@ def request_data(
     and unintentional side-effects.
     """
         
-    url, credentials = build_credentials(url, token, username, password)
     request = SwarmRequest(url=url, **credentials)
     request.set_collection(collection)
     request.set_products(measurements=measurements, models=models,
