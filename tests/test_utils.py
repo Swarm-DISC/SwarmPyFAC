@@ -134,7 +134,7 @@ def test_request_data_examples():
         utils.request_data(
             utils.date.datetime(2017, 7, 5),
             utils.date.datetime(2017, 7, 6),
-            toten=token)
+            token=token)
         assert mock.call_count == 2
             
         
