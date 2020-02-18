@@ -132,8 +132,8 @@ def test_request_data_examples():
         utils.request_data(token=token)
         assert mock.call_count == 1
         utils.request_data(
-            date.datetime(2017, 7, 5),
-            date.datetime(2017, 7, 6),
+            utils.date.datetime(2017, 7, 5),
+            utils.date.datetime(2017, 7, 6),
             toten=token)
         assert mock.call_count == 2
             
