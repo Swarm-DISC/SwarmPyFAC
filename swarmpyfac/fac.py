@@ -503,7 +503,7 @@ def fac_from_file(**options):
 
 
 def main(*argv):
-        results, input_data = fac_from_file()
+    results, input_data = fac_from_file()
     lat, fac = results[1][:, 0], results[3]
     reference = sw.read_cdf(
         'otherData/SW_OPER_FACATMS_2F_20160101T000000_20160101T235959_0301.cdf',
