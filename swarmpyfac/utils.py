@@ -54,9 +54,6 @@ read_cdf
     of attributes you want to read from the cdf file,
     and what you want to refere to them as afterwards.
 """
-# """ Utilities for working on swarm data,
-# when using the viresclient python client.
-# """
 
 __version__ = '0.1.3'
 __author__ = 'Ask Neve Gamby'
@@ -68,24 +65,8 @@ import cdflib
 
 from viresclient import SwarmRequest, ClientConfig
 
-# from . import safety as safe_user
-
 MU_0 = 4.0 * np.pi * 10**(-7)
 TO_RADIANS = np.pi / 180
-
-    
-# def _pack_nd(*scalarss):
-    # """ Pack n arrays of scalars into an array of n dimensional vectors.
-    # """
-    # if len(scalarss) < 1:
-        # return None
-    # elif len(scalarss) == 1:
-        # return np.expand_dims(scalarss[0],1)
-    # dimensions = len(scalarss)
-    # result = np.zeros((len(scalarss[0]),dimensions))
-    # for i, scalars in enumerate(scalarss):
-        # result[:,i] = scalars
-    # return results
 
     
 def pack_3d(xs, ys, zs):
@@ -128,21 +109,11 @@ def pack_3d(xs, ys, zs):
            [ 3.,  3., -1.],
            [ 4.,  5.,  1.]])
     """
-    # return _pack_nd(xs,ys,zs)
     result = np.zeros((len(xs), 3))
-    # if (len(xs) != len(ys) or len(xs) != len(zs)):
-        # raise ValueError('lengths not equal, with: '
-                         # + '!='.join(map(lambda i: str(len(i)),[xs,ys,zs])))
     result[:, 0] = xs
     result[:, 1] = ys
     result[:, 2] = zs
     return result
-    
-    
-# def _as_nd(scalars, n=3):
-    # """ Copies an array of scalars so it becomes an array of vectors.
-    # """
-    # return pack_3d(*[scalars]*n)
 
 
 def as_3d(scalars):
@@ -169,50 +140,8 @@ def as_3d(scalars):
            [27., 30., 33.],
            [48., 52., 56.]])
     """
-    # return _as_nd(xs)
-    # """ As pack_3d, but with the same vector in on all components.
-    # Use this form array operations where one part has a scalars (this),
-    # and another 3d vectors.
-    # """
     return pack_3d(scalars, scalars, scalars)
 
-    
-# # currently unused, alternative to NEC_to_VSC,
-# # in consideration as replacement
-# class _NEC_to_VSC2:
-    
-    # def __init__(self, velocities=None,angles=None,sines_cosines = None):
-        # # self.ready = False
-        # if sines_cosines is not None:
-            # self.sines, self.cosines = sines_cosines
-            # # self.ready = True
-        # elif angles is not None:
-            # self.from_angles(angles)
-        # elif velocities is not None
-            # self.from_velocities(velocities)
-        # else:
-            # raise ValueError("At least one parameter must be not None")
-        
-    # def from_angles(self,angles):
-        # self.sines = np.sin(angles)
-        # self.cosines = np.cos(angles)
-        # # self.ready = True
-        
-    # def from_velocities(self, velocities):
-        # self.from_angles(-np.arctan2(velocities[:, 0] - velocities[:, 1],
-                                     # velocities[:, 0] + velocities[:, 1]))
-                                     
-    # def __call__(self,vectors):
-        # return pack_3d(self.cosines*vectors[:, 0] + self.sines*vectors[:, 1],
-                       # - self.sines*vectors[:, 0] + self.cosines*vectors[:, 1],
-                       # vectors[:, 2])
-                       
-    # def inverse(self):
-        # self.sines = -self.sines
-        # # return pack_3d(self.cosines*vectors[:, 0] - self.sines*vectors[:, 1],
-                       # # self.sines*vectors[:, 0] + self.cosines*vectors[:, 1],
-                       # # vectors[:, 2])
-    
 
 def map_3d(function,vectors):
     """ map_3d maps a function for 1d data to each dimension in 3d data.
@@ -281,12 +210,6 @@ def NEC_to_VSC(velocities):
            [  7.0...,  19.1...,  35. ...],
            [-38.4..., -22.4...,  -8.5...]])
     """
-    # """ Build a transform going from the NEC frame to the VEC frame.
-    # This is done based on the velocities at each point, so the
-    # transformation will act differently on each point.
-    # Returns the actual transformation function,
-    # which can then be applied to compariable series.
-    # """
     angles = -np.arctan2(velocities[:, 0] - velocities[:, 1],
                          velocities[:, 0] + velocities[:, 1])
     sines = np.sin(angles)
@@ -315,10 +238,6 @@ def NEC_to_VSC(velocities):
         ----
         See NEC_to_VSC for examples of use.
         """
-        # """ Transforms from the NEC frame to the VEC frame.
-        # Note that the frames have alligned origos,
-        # so vectors and points transform the same way.
-        # """
         return pack_3d(cosines*vectors[:, 0] + sines*vectors[:, 1],
                        - sines*vectors[:, 0] + cosines*vectors[:, 1],
                        vectors[:, 2])  # Does the 3rd dimension flip?
@@ -414,7 +333,6 @@ def spherical_delta(positions):
   
                    
 def curl(delta_x, delta_field, target_index=2):
-         # delta_left=None, delta_right=None, target_index=2):
     """ Compute a single component of curl for an array of vectors.
     
     This function is used to calculate a finite difference apporximation
@@ -451,14 +369,6 @@ def curl(delta_x, delta_field, target_index=2):
     """
     index_x = (target_index+1) % 3
     index_y = (target_index+2) % 3
-    # if delta_left is None:
-        # if left is None:
-            # raise ValueError("Either left or delta_left must be specified.")
-        # delta_left = delta(left)
-    # if delta_right is None:
-        # if right is None:
-            # raise ValueError("Either right or delta_right must be specified.")
-        # delta_right = delta(right)
     return (delta_field[:, index_y] / delta_x[:, index_x]
             - delta_field[:, index_x] / delta_x[:, index_y])
 
