@@ -139,8 +139,25 @@ def test_request_data_examples():
             
         
 @pytest.mark.viresclient
-def test_read_cdf():
-    pass
+def test_read_cdf_examples():
+    class MockedCDFRead:
+        def varget(self, key):
+            return f'data on: {key}'
+    with patch('cdflib.CDF') as mock:
+        mock.return_value = MockedCDFRead()
+        result = utils.read_cdf('tempdata.CDF')
+        assert mock.call_count == 1
+        assert result == {}
+        result = utils.read_cdf('tempdata.cdf', time='Timestamp')
+        assert mock.call_count == 2
+        assert set(result) == {'time'}
+        assert result['time'] == 'data on: Timestamp'
+        options = {'time': 'Timestamp', 'B_base': 'B_NEC'}
+        result = utils.read_cdf('tempdata.cdf', **options)
+        assert mock.call_count == 3
+        assert set(result) == set(options)
+        for key in options.keys():
+            assert result[key] == 'data on: {}'.format(options[key])
     # try:
         # token = os.environ.get('VIRES_TOKEN')
         # data = utils.request_data(token=token,to_file=False)
